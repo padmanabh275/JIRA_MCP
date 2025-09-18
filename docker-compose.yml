@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  jira-chatbot:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=False
+      # Add your Jira credentials here (optional)
+      # - JIRA_BASE_URL=https://your-domain.atlassian.net
+      # - JIRA_EMAIL=your-email@example.com
+      # - JIRA_API_TOKEN=your-api-token
+    volumes:
+      - ./vector_db:/app/vector_db
+      - ./cache:/app/cache
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
